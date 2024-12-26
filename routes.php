@@ -1,5 +1,7 @@
 <?php
 
+require_once 'app/helpers/auth.php';
+
 $routes = [
     'admin' => [
         'admin/dashboard' => [
@@ -100,18 +102,38 @@ $routes = [
 ];
 
 
+$public_routes = [
+    'login'=> [
+        'controller' => 'app/controllers/login.php'
+    ],
+    'signup'=>[
+        'controller' => 'app/controllers/signup.php'
+    ]
+];
+
 $PATH = $_SERVER['REQUEST_URI'];
 $PATH = parse_url($PATH)['path'];
 
-require_auth();
-$routes = array_merge($routes['all'], $routes['admin'], $routes['member']);
-$availableRoutes = array_merge();
+if (array_key_exists($PATH, $public_routes)) {
+    $route = $public_routes[$PATH];
+    if (!is_logged_in()){
+        require $route['controller'];
+    } 
+}
 
-if (array_key_exists($PATH, $availableRoutes)) {
-    $roles = $availableRoutes[$PATH]['roles'];
+if (!is_logged_in()){
+    require 'app/controllers/member/books.php';
+}
+
+$routes = array_merge($routes['all'], $routes['admin'], $routes['member']);
+
+
+if (array_key_exists($PATH, $routes)) {
+    $route = $routes[$PATH];
+
+    $roles = $route['roles'];
     $user_role = get_logged_user_role();
     if (is_allowed($roles, $user_role)) {
-        $route = $availableRoutes[$PATH];
         require $route['controller'];
     } else {
         abort(403);
