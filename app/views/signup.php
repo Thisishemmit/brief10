@@ -9,7 +9,7 @@
 <body class="bg-[url('images/BookBg.webp')] bg-cover bg-center min-h-screen">
     <div class="min-h-screen flex flex-col items-center justify-center p-4">
         <div class="bg-black bg-opacity-10 text-white backdrop-blur-lg shadow-lg rounded-lg p-8 max-w-md w-full">
-            <form action="/app/controllers/signup.php" method="POST" class="flex flex-col items-center shadow-lg">
+            <form action="signup" method="POST" class="flex flex-col items-center shadow-lg">
                 <h2 class="text-xl font-semibold">Create a new account</h2>
                 <p class="text-sm mb-5">Join us for a great experience</p>
 
