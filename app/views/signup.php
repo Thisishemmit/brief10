@@ -6,8 +6,12 @@
     <title>Sign-up</title>
     <script src="JavaScript/tailwind.js"></script>
 </head>
-<body class="bg-[url('images/BookBg.webp')] bg-cover bg-center min-h-screen">
-
+<body class="bg-cover bg-center min-h-screen">
+    <?php 
+        $path = dirname($_SERVER['SCRIPT_FILENAME']);
+        echo $path;
+    ?>
+    <img src="images/BookBg.webp" alt="" srcset="">
     <div class="min-h-screen flex flex-col items-center justify-center p-4">
         <div class="bg-black bg-opacity-10 text-white backdrop-blur-lg shadow-lg rounded-lg p-8 max-w-md w-full">
 

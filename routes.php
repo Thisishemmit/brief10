@@ -4,55 +4,55 @@ require_once 'app/helpers/auth.php';
 
 $routes = [
     'admin' => [
-        'admin/dashboard' => [
+        '/brief10/admin/dashboard' => [
             'controller' => 'app/controllers/admin/dashboard.php',
             'title' => 'Dashboard',
             'icon' => 'fa fa-dashboard',
             'roles' => ['admin']
         ],
-        'admin/members' => [
+        '/brief10/admin/members' => [
             'controller' => 'app/controllers/admin/members.php',
             'title' => 'Users',
             'icon' => 'fa fa-users',
             'roles' => ['admin']
         ],
-        'admin/delete-user' => [
+        '/brief10/admin/delete-user' => [
             'controller' => 'app/controllers/admin/members/delete.php',
             'roles' => ['admin']
         ],
-        'admin/books' => [
+        '/brief10/admin/books' => [
             'controller' => 'app/controllers/admin/books.php',
             'title' => 'Books',
             'icon' => 'fa fa-book',
             'roles' => ['admin']
         ],
-        'admin/books/add' => [
+        '/brief10/admin/books/add' => [
             'controller' => 'app/controllers/admin/books/add.php',
             'roles' => ['admin']
         ],
-        'admin/books/edit' => [
+        '/brief10/admin/books/edit' => [
             'controller' => 'app/controllers/admin/books/edit.php',
             'roles' => ['admin']
         ],
-        'admin/books/delete' => [
+        '/brief10/admin/books/delete' => [
             'controller' => 'app/controllers/admin/books/delete.php',
             'roles' => ['admin']
         ],
-        'admin/borrows' => [
+        '/brief10/admin/borrows' => [
             'controller' => 'app/controllers/admin/borrows.php',
             'title' => 'Borrows',
             'icon' => 'fa fa-book',
             'roles' => ['admin']
         ],
-        'admin/borrows/confirm-return' => [
+        '/brief10/admin/borrows/confirm-return' => [
             'controller' => 'app/controllers/admin/borrows/confirm-return.php',
             'roles' => ['admin']
         ],
-        'admin/borrows/confirm-borrow' => [
+        '/brief10/admin/borrows/confirm-borrow' => [
             'controller' => 'app/controllers/admin/borrows/confirm-borrow.php',
             'roles' => ['admin']
         ],
-        'admin/reservations' => [
+        '/brief10/admin/reservations' => [
             'controller' => 'app/controllers/admin/reservations.php',
             'title' => 'Reservations',
             'icon' => 'fa fa-book',
@@ -61,40 +61,40 @@ $routes = [
     ],
 
     'member' => [
-        'member/dashboard' => [
+        '/brief10/member/dashboard' => [
             'controller' => 'app/controllers/member/dashboard.php',
             'title' => 'Dashboard',
             'icon' => 'fa fa-dashboard',
             'roles' => ['member']
         ],
-        'member/books' => [
+        '/brief10/member/books' => [
             'controller' => 'app/controllers/member/books.php',
             'title' => 'Books',
             'icon' => 'fa fa-book',
             'roles' => ['member']
         ],
-        'member/books/reserve' => [
+        '/brief10/member/books/reserve' => [
             'controller' => 'app/controllers/member/books/reserve.php',
             'roles' => ['member']
         ],
-        'member/books/cancel-reservation' => [
+        '/brief10/member/books/cancel-reservation' => [
             'controller' => 'app/controllers/member/books/cancel-reservation.php',
             'roles' => ['member']
         ],
-        'member/borrows' => [
+        '/brief10/member/borrows' => [
             'controller' => 'app/controllers/member/borrows.php',
             'title' => 'Borrows',
             'icon' => 'fa fa-book',
             'roles' => ['member']
         ],
-        'member/borrows/return' => [
+        '/brief10/member/borrows/return' => [
             'controller' => 'app/controllers/member/borrows/return.php',
             'roles' => ['member']
         ],
     ],
 
     'all' => [
-        'logout' => [
+        '/brief10/logout' => [
             'controller' => 'app/controllers/logout.php',
             'roles' => ['admin', 'member']
         ],
@@ -103,10 +103,10 @@ $routes = [
 
 
 $public_routes = [
-    'login'=> [
+    '/brief10/login'=> [
         'controller' => 'app/controllers/login.php'
     ],
-    'signup'=>[
+    '/brief10/signup'=>[
         'controller' => 'app/controllers/signup.php'
     ]
 ];
@@ -118,7 +118,10 @@ if (array_key_exists($PATH, $public_routes)) {
     $route = $public_routes[$PATH];
     if (!is_logged_in()){
         require $route['controller'];
+        exit;
     } 
+} else{
+    echo $PATH ;
 }
 
 if (!is_logged_in()){
