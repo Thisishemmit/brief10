@@ -2,6 +2,7 @@
     require_once 'app/config/database.php';
     require_once 'app/models/User.php';
     require_once 'app/views/signup.php';
+    require_once 'app/helpers/errors.php';
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signup'])){
         $name = trim($_POST['name']);
@@ -25,5 +26,6 @@
             set_error('signup', $error);
         } 
 
+        
     }
 ?>
