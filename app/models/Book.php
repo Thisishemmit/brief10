@@ -58,6 +58,21 @@ class Book
         return $this->created_at;
     }
 
+    public function get()
+    {
+        return [
+            'id_book' => $this->id,
+            'title' => $this->title,
+            'author' => $this->author,
+            'category_id' => $this->category_id,
+            'cover_image' => $this->cover_image,
+            'summary' => $this->summary,
+            'id_user' => $this->id_user,
+            'status' => $this->status,
+            'created_at' => $this->created_at
+        ];
+    }
+
     public function create($title, $author, $category_id, $cover_image, $summary, $id_user, $status = 'available')
     {
         $sql = "INSERT INTO Books (title, author, category_id, cover_image, summary, id_user, status)
@@ -177,7 +192,7 @@ class Book
             $b->id_user = $book['id_user'];
             $b->status = $book['status'];
             $b->created_at = $book['created_at'];
-            return $b;
+            return $b->get();
         }, $books);
         return $books;
     }
@@ -195,7 +210,7 @@ class Book
         if ($user) {
             $u = new User($this->db);
             $u->findById($user['id_user']);
-            return $u;
+            return $u->get();
         }
         return null;
     }
