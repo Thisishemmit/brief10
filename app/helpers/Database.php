@@ -66,4 +66,8 @@ class Database
         $stmt = $this->query($sql, $params);
         return $stmt->fetchAll();
     }
+
+    public function lastInsertId() {
+        return $this->conn->lastInsertId();
+    }
 }
