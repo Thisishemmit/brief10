@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>403 - Forbidden</title>
-    <script src="JavaScript/tailwind.js"></script>
+    <script src="/JavaScript/tailwind.js"></script>
 </head>
 <body class="bg-gray-100 h-screen flex items-center justify-center">
     <div class="text-center p-8">

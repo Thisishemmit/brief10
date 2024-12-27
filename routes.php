@@ -11,6 +11,24 @@ $routes = [
             'icon' => 'fa fa-dashboard',
             'roles' => ['admin']
         ],
+        '/admin/categories' => [
+            'controller' => 'app/controllers/admin/categories.php',
+            'title' => 'Categories',
+            'icon' => 'fa fa-tags',
+            'roles' => ['admin']
+        ],
+        '/admin/categories/add' => [
+            'controller' => 'app/controllers/admin/categories/add.php',
+            'roles' => ['admin']
+        ],
+        '/admin/categories/edit' => [
+            'controller' => 'app/controllers/admin/categories/edit.php',
+            'roles' => ['admin']
+        ],
+        '/admin/categories/delete' => [
+            'controller' => 'app/controllers/admin/categories/delete.php',
+            'roles' => ['admin']
+        ],
         '/admin/members' => [
             'controller' => 'app/controllers/admin/members.php',
             'title' => 'Users',
@@ -82,8 +100,7 @@ $routes = [
         ],
     ],
 
-    'all' => [
-    ]
+    'all' => []
 ];
 
 $auth_routes = [
@@ -107,7 +124,6 @@ $public_routes = [
 $PATH = $_SERVER['REQUEST_URI'];
 $PATH = parse_url($PATH)['path'];
 
-// Handle authentication routes (login/signup)
 if (array_key_exists($PATH, $auth_routes)) {
     if (is_logged_in()) {
         header('Location: /');
@@ -118,14 +134,12 @@ if (array_key_exists($PATH, $auth_routes)) {
     exit;
 }
 
-// Handle public routes
 if (array_key_exists($PATH, $public_routes)) {
     $route = $public_routes[$PATH];
     require $route['controller'];
     exit;
 }
 
-// All other routes require authentication
 require_auth();
 
 $routes = array_merge($routes['all'], $routes['admin'], $routes['member']);

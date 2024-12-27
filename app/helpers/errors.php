@@ -1,29 +1,41 @@
 <?php
 function set_error($key, $message)
 {
-    $_SESSION["error_{$key}"] = $message;
+    $_SESSION['errors'][$key] = $message;
 }
 
 function get_error($key)
 {
-    if (has_error($key)) {
-        $error = $_SESSION["error_{$key}"];
-        unset($_SESSION["error_{$key}"]);
-        return $error;
-    }
-    return null;
+    $error = $_SESSION['errors'][$key] ?? null;
+    unset($_SESSION['errors'][$key]);
+    return $error;
 }
 
 function has_error($key)
 {
-    return isset($_SESSION["error_{$key}"]);
+    return isset($_SESSION['errors'][$key]);
 }
 
 function show_error($message) {
     print_r($message);
 }
 
-function abort($code = 404) {
-    require "app/views/errors/{$code}.php";
-    exit;
+function abort($code)
+{
+    if ($code === 404) {
+        require 'app/views/errors/404.php';
+        exit;
+    } else if ($code === 403) {
+        require 'app/views/errors/403.php';
+        exit;
+    } else if ($code === 500) {
+        require 'app/views/errors/500.php';
+        exit;
+    } else if ($code === 'book_not_found') {
+        require 'app/views/errors/book_not_found.php';
+        exit;
+    } else if ($code === 'book_not_found_admin') {
+        require 'app/views/errors/book_not_found_admin.php';
+        exit;
+    }
 }

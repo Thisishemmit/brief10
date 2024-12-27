@@ -9,7 +9,7 @@ skip_if_logged_in();
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
-    
+
     if (empty($email) || empty($password)) {
         $error = 'Please fill all inputs';
         set_error('login', $error);
@@ -23,7 +23,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     if (empty($error)) {
         $config = require 'app/config/database.php';
         $db = new Database($config['username'], $config['password'], $config['database']);
-        $db->connect();
+        if (!$db->connect()) {
+            abort(500);
+        }
 
         $user = new User($db);
         if ($user->findByEmail($email)) {
