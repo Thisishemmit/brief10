@@ -126,8 +126,14 @@ class Book
 
     public function update($title, $author, $category_id, $cover_image, $summary)
     {
-        $sql = "UPDATE Books SET title = :title, author = :author, category_id = :category_id,
-                cover_image = :cover_image, summary = :summary WHERE id_book = :id";
+        $sql = "UPDATE Books SET 
+                title = :title,
+                author = :author,
+                category_id = :category_id,
+                cover_image = :cover_image,
+                summary = :summary
+                WHERE id_book = :id";
+
         $params = [
             ':id' => $this->id,
             ':title' => $title,
@@ -136,6 +142,7 @@ class Book
             ':cover_image' => $cover_image,
             ':summary' => $summary
         ];
+
         if ($this->db->query($sql, $params)) {
             $this->title = $title;
             $this->author = $author;
