@@ -37,5 +37,7 @@ function abort($code)
     } else if ($code === 'book_not_found_admin') {
         require 'app/views/errors/book_not_found_admin.php';
         exit;
+    } else if ($code === 'member_not_found'){
+        require 'app/views/errors/member_not_found.php';
     }
 }
