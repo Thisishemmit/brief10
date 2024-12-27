@@ -37,6 +37,16 @@ class User
     {
         return $this->created_at;
     }
+    public function get()
+    {
+        return [
+            'id_user' => $this->id,
+            'name' => $this->name,
+            'email' => $this->email,
+            'role' => $this->role,
+            'created_at' => $this->created_at
+        ];
+    }
 
     public function create($name, $email, $password, $role)
     {
@@ -71,6 +81,7 @@ class User
             $this->id = $user['id_user'];
             $this->name = $user['name'];
             $this->email = $user['email'];
+            $this->password = $user['password'];
             $this->role = $user['role'];
             $this->created_at = $user['created_at'];
             return true;
@@ -87,6 +98,7 @@ class User
             $this->id = $user['id_user'];
             $this->name = $user['name'];
             $this->email = $user['email'];
+            $this->password = $user['password'];
             $this->role = $user['role'];
             $this->created_at = $user['created_at'];
             return true;

@@ -1,3 +1,11 @@
+php_flag display_errors on
+php_value error_reporting 9999
 RewriteEngine On
-RewriteCond %{REQUEST_URI} !^/index\.php$ [NC]
+
+# Allow access to JavaScript and images directories
+RewriteRule ^(JavaScript|images)/ - [L]
+
+# If the file or directory doesn't exist, redirect to index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php [L,QSA]

@@ -7,11 +7,16 @@ CREATE TABLE IF NOT EXISTS Users(
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS Categories(
+    id_category INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS Books(
     id_book INT PRIMARY KEY AUTO_INCREMENT,
     title VARCHAR(255) NOT NULL,
     author VARCHAR(255) NOT NULL,
-    category_id INT NOT NULL,
+    category_id INT,
     cover_image VARCHAR(255) NOT NULL,
     summary TEXT NOT NULL,
     id_user INT NOT NULL,
@@ -21,10 +26,6 @@ CREATE TABLE IF NOT EXISTS Books(
     FOREIGN KEY (category_id) REFERENCES Categories(id_category) ON DELETE SET NULL
 );
 
-CREATE TABLE IF NOT EXISTS Categories(
-    id_category INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(255) NOT NULL
-);
 
 CREATE TABLE IF NOT EXISTS BorrowedBooks(
     id_borrowed_book INT PRIMARY KEY AUTO_INCREMENT,
