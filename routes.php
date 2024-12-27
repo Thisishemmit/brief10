@@ -35,8 +35,12 @@ $routes = [
             'icon' => 'fa fa-users',
             'roles' => ['admin']
         ],
-        '/admin/delete-user' => [
+        '/admin/members/delete' => [
             'controller' => 'app/controllers/admin/members/delete.php',
+            'roles' => ['admin']
+        ],
+        '/admin/members/edit' => [
+            'controller' => 'app/controllers/admin/members/edit.php',
             'roles' => ['admin']
         ],
         '/admin/books' => [
