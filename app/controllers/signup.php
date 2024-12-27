@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signup'])) {
         set_error('signup', $error);
     }
 
-    if (!filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)) {
+    if (!filter_var($_POST["email"], filter: FILTER_VALIDATE_EMAIL)) {
         $error = "Invalid email format.";
         set_error('signup', $error);
     }

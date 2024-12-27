@@ -6,7 +6,7 @@ require_once 'app/helpers/Database.php';
 
 skip_if_logged_in();
 
-if (isset($_POST['email']) && isset($_POST['password'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
     
