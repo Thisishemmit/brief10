@@ -18,13 +18,11 @@ if (!$book_id) {
     abort(404);
 }
 
-// Load the book
 $book = new Book($db);
 if (!$book->findById($book_id)) {
     abort('book_not_found_admin');
 }
 
-// Get current book data
 $bookData = [
     'id' => $book->getId(),
     'title' => $book->getTitle(),
@@ -42,13 +40,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_book'])) {
     $cover_image = trim($_POST['cover_image']);
     $error = '';
 
-    // Validate inputs
     if (empty($title) || empty($author) || empty($category_id) || empty($summary) || empty($cover_image)) {
         $error = 'Please fill all required fields';
         set_error('edit_book', $error);
     }
 
-    // Validate category
     $cat = new Category($db);
     if (!$cat->findById($category_id)) {
         $error = 'Invalid category';
@@ -65,7 +61,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_book'])) {
         }
     }
 
-    // Update bookData with submitted values if there was an error
     if (!empty($error)) {
         $bookData = [
             'id' => $book->getId(),
@@ -77,8 +72,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_book'])) {
         ];
     }
 }
-
-// Get categories for the dropdown
 $categories = $db->fetchAll("SELECT * FROM Categories");
 
 require 'app/views/admin/books/edit.php';

@@ -1,4 +1,5 @@
 <?php
+require_once 'app/models/Category.php';
 require_once 'app/helpers/Database.php';
 require_once 'app/models/User.php';
 
@@ -36,6 +37,12 @@ class Book
     public function getCategoryId()
     {
         return $this->category_id;
+    }
+    public function getCategory()
+    {
+        $cat = new Category($this->db);
+        $cat->findById($this->category_id);
+        return $cat->getName();
     }
     public function getCoverImage()
     {
@@ -200,6 +207,26 @@ class Book
             $b->status = $book['status'];
             $b->created_at = $book['created_at'];
             return $b->get();
+        }, $books);
+        return $books;
+    }
+
+    public function getAllBooksObj()
+    {
+        $sql = "SELECT * FROM Books";
+        $books = $this->db->fetchAll($sql);
+        $books = array_map(function ($book) {
+            $b = new Book($this->db);
+            $b->id = $book['id_book'];
+            $b->title = $book['title'];
+            $b->author = $book['author'];
+            $b->category_id = $book['category_id'];
+            $b->cover_image = $book['cover_image'];
+            $b->summary = $book['summary'];
+            $b->id_user = $book['id_user'];
+            $b->status = $book['status'];
+            $b->created_at = $book['created_at'];
+            return $b;
         }, $books);
         return $books;
     }
