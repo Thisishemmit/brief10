@@ -258,15 +258,16 @@ class Book
         $params = [':id' => $this->id];
         return $this->db->fetchAll($sql, $params);
     }
-    public function borrow($user_id, $deu_date){
+    public function borrow($user_id, $deu_date)
+    {
         if (!$this->id) {
-        return false;
+            return false;
         }
         $sql = "INSERT INTO BorrowedBooks (id_book, id_user, due_at) VALUES (:id_book, :id_user,:due_at)";
         $params = [
             ":id_book" => $this->id,
-            ":id_user"=> $user_id,
-            ":due_at"=> $deu_date
+            ":id_user" => $user_id,
+            ":due_at" => $deu_date
         ];
 
         if ($this->db->query($sql, $params)) {
@@ -274,15 +275,52 @@ class Book
             return true;
         }
         return false;
-
     }
 
-    public function reserve($user_id) {
+    public function reserve($user_id)
+    {
         if (!$this->id) {
             return false;
         }
         $sql = "INSERT INTO Reservations (id_book, id_user) VALUES (:id_book, :id_user)";
         $params = [':id_book' => $this->id, ':id_user' => $user_id];
         return $this->db->query($sql, $params);
+    }
+
+    public function requestBorrow($user_id, $due_date) {
+        if (!$this->id) {
+            return false;
+        }
+        $sql = "INSERT INTO BorrowRequests (id_book, id_user, due_at) VALUES (:id_book, :id_user, :due_at)";
+        $params = [':id_book' => $this->id, ':id_user' => $user_id, ':due_at' => $due_date];
+        return $this->db->query($sql, $params);
+    }
+
+    public function approveBorrowRequest($request_id) {
+        $sql = "UPDATE BorrowRequests SET status = 'approved' WHERE id_borrow_request = :id";
+        $params = [':id' => $request_id];
+        if ($this->db->query($sql, $params)) {
+            $sql = "SELECT id_user, due_at FROM BorrowRequests WHERE id_borrow_request = :id";
+            $params = [':id' => $request_id];
+            $request = $this->db->fetch($sql, $params);
+            if ($request) {
+                return $this->borrow($request['id_user'], $request['due_at']);
+            }
+        }
+        return false;
+    }
+
+    public function rejectBorrowRequest($request_id) {
+        $sql = "UPDATE BorrowRequests SET status = 'rejected' WHERE id_borrow_request = :id";
+        $params = [':id' => $request_id];
+        return $this->db->query($sql, $params);
+    }
+
+    public function confirmeReturn() {
+        $sql = "UPDATE BorrowedBooks SET returned_at = NOW() WHERE id_book = :id";
+        $params = [':id' => $this->id];
+        if($this->db->query($sql, $params)) {
+            return $this->updateStatus('available');
+        }
     }
 }

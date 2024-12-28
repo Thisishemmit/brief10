@@ -39,6 +39,16 @@ CREATE TABLE IF NOT EXISTS BorrowedBooks(
     FOREIGN KEY (id_user) REFERENCES Users(id_user) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS BorrowRequests(
+    id_borrow_request INT PRIMARY KEY AUTO_INCREMENT,
+    id_book INT NOT NULL,
+    id_user INT NOT NULL,
+    due_at TIMESTAMP NOT NULL,
+    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+    requested_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_book) REFERENCES Books(id_book) ON DELETE CASCADE,
+    FOREIGN KEY (id_user) REFERENCES Users(id_user) ON DELETE CASCADE
+);
 CREATE TABLE IF NOT EXISTS Reservations(
     id_reservation INT PRIMARY KEY AUTO_INCREMENT,
     id_book INT NOT NULL,
