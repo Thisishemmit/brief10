@@ -1,6 +1,7 @@
 <?php
 
 require_once 'app/helpers/auth.php';
+require_once 'app/helpers/errors.php';
 require_once 'app/helpers/Database.php';
 require_once 'app/models/Book.php';
 
@@ -15,14 +16,13 @@ if (isset($_GET['id'])) {
 
     $book = new Book($db);
     if ($book->findById($id)) {
-        if ($book->delete()) {
-            header('Location: /admin/books');
-        } else {
-            abort(500);
+        if (!$book->delete()) {
+            $error = "Couldn't delete book: Unknown error";
+            set_error('delete_book', $error);
         }
     } else {
-        abort(404);
+        $error = "Couldn't delete book: book not found";
+        set_error('delete_book', $error);
     }
-    exit;
 }
-abort(404);
+header('Location: /admin/books');
