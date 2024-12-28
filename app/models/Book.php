@@ -133,7 +133,7 @@ class Book
 
     public function update($title, $author, $category_id, $cover_image, $summary)
     {
-        $sql = "UPDATE Books SET 
+        $sql = "UPDATE Books SET
                 title = :title,
                 author = :author,
                 category_id = :category_id,
@@ -257,5 +257,32 @@ class Book
                 ORDER BY r.reserved_at ASC";
         $params = [':id' => $this->id];
         return $this->db->fetchAll($sql, $params);
+    }
+    public function borrow($user_id, $deu_date){
+        if (!$this->id) {
+        return false;
+        }
+        $sql = "INSERT INTO BorrowedBooks (id_book, id_user, due_at) VALUES (:id_book, :id_user,:due_at)";
+        $params = [
+            ":id_book" => $this->id,
+            ":id_user"=> $user_id,
+            ":due_at"=> $deu_date
+        ];
+
+        if ($this->db->query($sql, $params)) {
+            return $this->updateStatus('borrowed');
+            return true;
+        }
+        return false;
+
+    }
+
+    public function reserve($user_id) {
+        if (!$this->id) {
+            return false;
+        }
+        $sql = "INSERT INTO Reservations (id_book, id_user) VALUES (:id_book, :id_user)";
+        $params = [':id_book' => $this->id, ':id_user' => $user_id];
+        return $this->db->query($sql, $params);
     }
 }
