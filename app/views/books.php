@@ -24,7 +24,7 @@
                     <tr class="bg-gray-800 text-white">
                         <th class="p-4 border border-gray-300">Title</th>
                         <th class="p-4 border border-gray-300">Author</th>
-                        <th class="p-4 border border-gray-300">Created at</th>
+                        <th class="p-4 border border-gray-300">Category</th>
                         <th class="p-4 border border-gray-300">Availability</th>
                     </tr>
                 </thead>
@@ -33,10 +33,10 @@
 
                     <?php foreach($allBooks as $book) : ?>
                         <tr class="border-b border-gray-300">
-                            <td class="p-4 border border-gray-300"><?= $title ?></td>
-                            <td class="p-4 border border-gray-300"><?= $author ?></td>
-                            <td class="p-4 border border-gray-300">Fiction</td>
-                            <td class="p-4 border border-gray-300"><?= $status ?></td>
+                            <td class="p-4 border border-gray-300"><?= $book->getTitle() ?></td>
+                            <td class="p-4 border border-gray-300"><?= $book->getAuthor() ?></td>
+                            <td class="p-4 border border-gray-300"><?= $book->getCategory() ?></td>
+                            <td class="p-4 border border-gray-300"><?= $book->getStatus() ?></td>
                         </tr>
                     <?php endforeach; ?>
                         
