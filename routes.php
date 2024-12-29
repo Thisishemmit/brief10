@@ -95,6 +95,10 @@ $routes = [
             'icon' => 'fa fa-book',
             'roles' => ['admin']
         ],
+        '/admin/reservations/delete' => [
+            'controller' => 'app/controllers/admin/reservations/delete.php',
+            'roles' => ['admin']
+        ],
     ],
 
     'member' => [

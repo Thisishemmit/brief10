@@ -389,4 +389,25 @@ class Book
         
         return $this->db->query($sql, $params);
     }
+
+    public function getBooksWithReservations()
+    {
+        $sql = "SELECT b.*, 
+                COUNT(r.id_reservation) as reservation_count 
+                FROM Books b 
+                LEFT JOIN Reservations r ON b.id_book = r.id_book 
+                GROUP BY b.id_book 
+                HAVING reservation_count > 0";
+        return $this->db->fetchAll($sql);
+    }
+
+    public function getBookReservationsWithUsers($book_id)
+    {
+        $sql = "SELECT r.*, u.name as user_name 
+                FROM Reservations r 
+                JOIN Users u ON r.id_user = u.id_user 
+                WHERE r.id_book = :book_id 
+                ORDER BY r.reserved_at ASC";
+        return $this->db->fetchAll($sql, [':book_id' => $book_id]);
+    }
 }

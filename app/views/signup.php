@@ -8,7 +8,7 @@ require_once 'app/helpers/errors.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign-up</title>
-    <script src="JavaScript/tailwind.js"></script>
+    <script src="/JavaScript/tailwind.js"></script>
 </head>
 
 <body class="bg-[url('images/BookBg.webp')] bg-cover bg-center min-h-screen">
