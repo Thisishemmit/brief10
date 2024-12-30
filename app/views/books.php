@@ -26,6 +26,7 @@
                         <th class="p-4 border border-gray-300">Author</th>
                         <th class="p-4 border border-gray-300">Category</th>
                         <th class="p-4 border border-gray-300">Availability</th>
+                        <th class="p-4 border border-gray-300">Details</th>
                     </tr>
                 </thead>
 
@@ -37,6 +38,8 @@
                             <td class="p-4 border border-gray-300"><?= $book->getAuthor() ?></td>
                             <td class="p-4 border border-gray-300"><?= $book->getCategory() ?></td>
                             <td class="p-4 border border-gray-300"><?= $book->getStatus() ?></td>
+                            <td class="p-4 border border-gray-300"><Button id="detailsBtn">View details</Button></td>
+
                         </tr>
                     <?php endforeach; ?>
                         
