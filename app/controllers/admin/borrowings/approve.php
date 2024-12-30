@@ -29,17 +29,18 @@ if (!$request) {
     exit;
 }
 
-// Check if book exists and get its status
-$book->findById($request['id_book']);
+if (!$book->findById($request['id_book'])) {
+    set_error('request_not_found', 'Book not found');
+    header('Location: /admin/borrowings');
+    exit;
+}
 if ($book->getStatus() === 'borrowed') {
     set_error('approve_request', 'Cannot approve request. Book is already borrowed.');
     header('Location: /admin/borrowings');
     exit;
 }
 
-// Approve this request
 if ($book->approveBorrowRequest($request_id)) {
-    // Reject all other pending requests for this book
     $book->rejectOtherPendingRequests($request_id);
     header('Location: /admin/borrowings');
     exit;
