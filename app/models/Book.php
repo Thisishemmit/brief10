@@ -97,15 +97,6 @@ class Book
         if ($this->db->query($sql, $params)) {
             $book = $this->db->lastInsertId();
             $book = $this->findById($book);
-            $this->id = $book['id_book'];
-            $this->title = $book['title'];
-            $this->author = $book['author'];
-            $this->category_id = $book['category_id'];
-            $this->cover_image = $book['cover_image'];
-            $this->summary = $book['summary'];
-            $this->id_user = $book['id_user'];
-            $this->status = $book['status'];
-            $this->created_at = $book['created_at'];
             return true;
         }
         return false;
@@ -258,6 +249,7 @@ class Book
         $params = [':id' => $this->id];
         return $this->db->fetchAll($sql, $params);
     }
+
     public function borrow($user_id, $deu_date)
     {
         if (!$this->id) {
@@ -287,7 +279,8 @@ class Book
         return $this->db->query($sql, $params);
     }
 
-    public function requestBorrow($user_id, $due_date) {
+    public function requestBorrow($user_id, $due_date)
+    {
         if (!$this->id) {
             return false;
         }
@@ -296,7 +289,39 @@ class Book
         return $this->db->query($sql, $params);
     }
 
-    public function approveBorrowRequest($request_id) {
+    public function getBookBorrowReqs()
+    {
+        $sql = "SELECT * FROM BorrowRequests WHERE id_book = :id";
+        $params = [':id' => $this->id];
+        return $this->db->fetchAll($sql, $params);
+    }
+
+    public function getAllBorrowReqs()
+    {
+        $sql = "SELECT * FROM BorrowRequests";
+        return $this->db->fetchAll($sql);
+    }
+
+    public function getAllBorrowed()
+    {
+        $sql = "SELECT * FROM BorrowedBooks";
+        return $this->db->fetchAll($sql);
+    }
+
+    public function getAllPendingBorrowReqs()
+    {
+        $sql = "SELECT * FROM BorrowRequests WHERE status = 'pending'";
+        return $this->db->fetchAll($sql);
+    }
+
+    public function getAllReservations()
+    {
+        $sql = "SELECT * FROM Reservations";
+        return $this->db->fetchAll($sql);
+    }
+
+    public function approveBorrowRequest($request_id)
+    {
         $sql = "UPDATE BorrowRequests SET status = 'approved' WHERE id_borrow_request = :id";
         $params = [':id' => $request_id];
         if ($this->db->query($sql, $params)) {
@@ -310,17 +335,79 @@ class Book
         return false;
     }
 
-    public function rejectBorrowRequest($request_id) {
+    public function rejectBorrowRequest($request_id)
+    {
         $sql = "UPDATE BorrowRequests SET status = 'rejected' WHERE id_borrow_request = :id";
         $params = [':id' => $request_id];
         return $this->db->query($sql, $params);
     }
 
-    public function confirmeReturn() {
-        $sql = "UPDATE BorrowedBooks SET returned_at = NOW() WHERE id_book = :id";
-        $params = [':id' => $this->id];
-        if($this->db->query($sql, $params)) {
-            return $this->updateStatus('available');
+    public function requestReturn()
+    {
+        $sql = "INSERT INTO ReturnRequests (id_borrowed_book, id_user) VALUES (:id_borrowed_book, :id_user)";
+        $params = [':id_borrowed_book' => $this->id, ':id_user' => $this->id_user];
+        return $this->db->query($sql, $params);
+    }
+
+    public function getReturnRequests()
+    {
+        $sql = "SELECT * FROM ReturnRequests";
+        return $this->db->fetchAll($sql);
+    }
+
+    public function approveReturnRequest($request_id)
+    {
+        $sql = "UPDATE ReturnRequests SET status = 'approved' WHERE id_return_request = :id";
+        $params = [':id' => $request_id];
+        if ($this->db->query($sql, $params)) {
+            $sql = "UPDATE BorrowedBooks SET returned_at = CURRENT_TIMESTAMP WHERE id_borrowed_book = :id";
+            $params = [':id' => $request_id];
+            return $this->db->query($sql, $params);
         }
+        return false;
+    }
+
+    public function rejectReturnRequest($request_id)
+    {
+        $sql = "UPDATE ReturnRequests SET status = 'rejected' WHERE id_return_request = :id";
+        $params = [':id' => $request_id];
+        return $this->db->query($sql, $params);
+    }
+
+    public function rejectOtherPendingRequests($approved_request_id)
+    {
+        $sql = "UPDATE BorrowRequests 
+                SET status = 'rejected' 
+                WHERE id_book = :id_book 
+                AND id_borrow_request != :request_id 
+                AND status = 'pending'";
+        
+        $params = [
+            ':id_book' => $this->id,
+            ':request_id' => $approved_request_id
+        ];
+        
+        return $this->db->query($sql, $params);
+    }
+
+    public function getBooksWithReservations()
+    {
+        $sql = "SELECT b.*, 
+                COUNT(r.id_reservation) as reservation_count 
+                FROM Books b 
+                LEFT JOIN Reservations r ON b.id_book = r.id_book 
+                GROUP BY b.id_book 
+                HAVING reservation_count > 0";
+        return $this->db->fetchAll($sql);
+    }
+
+    public function getBookReservationsWithUsers($book_id)
+    {
+        $sql = "SELECT r.*, u.name as user_name 
+                FROM Reservations r 
+                JOIN Users u ON r.id_user = u.id_user 
+                WHERE r.id_book = :book_id 
+                ORDER BY r.reserved_at ASC";
+        return $this->db->fetchAll($sql, [':book_id' => $book_id]);
     }
 }

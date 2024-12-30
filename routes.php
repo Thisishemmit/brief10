@@ -61,24 +61,42 @@ $routes = [
             'controller' => 'app/controllers/admin/books/delete.php',
             'roles' => ['admin']
         ],
-        '/admin/borrows' => [
-            'controller' => 'app/controllers/admin/borrows.php',
-            'title' => 'Borrows',
+        '/admin/borrowings' => [
+            'controller' => 'app/controllers/admin/borrowings.php',
+            'title' => 'Borrowings',
             'icon' => 'fa fa-book',
             'roles' => ['admin']
         ],
-        '/admin/borrows/confirm-return' => [
-            'controller' => 'app/controllers/admin/borrows/confirm-return.php',
+        '/admin/borrowings/approve' => [
+            'controller' => 'app/controllers/admin/borrowings/approve.php',
             'roles' => ['admin']
         ],
-        '/admin/borrows/confirm-borrow' => [
-            'controller' => 'app/controllers/admin/borrows/confirm-borrow.php',
+        '/admin/borrowings/reject' => [
+            'controller' => 'app/controllers/admin/borrowings/reject.php',
+            'roles' => ['admin']
+        ],
+        '/admin/returns' => [
+            'controller' => 'app/controllers/admin/returns.php',
+            'title' => 'Returns',
+            'icon' => 'fa fa-book',
+            'roles' => ['admin']
+        ],
+        '/admin/returns/approve' => [
+            'controller' => 'app/controllers/admin/returns/approve.php',
+            'roles' => ['admin']
+        ],
+        '/admin/returns/reject' => [
+            'controller' => 'app/controllers/admin/returns/reject.php',
             'roles' => ['admin']
         ],
         '/admin/reservations' => [
             'controller' => 'app/controllers/admin/reservations.php',
             'title' => 'Reservations',
             'icon' => 'fa fa-book',
+            'roles' => ['admin']
+        ],
+        '/admin/reservations/delete' => [
+            'controller' => 'app/controllers/admin/reservations/delete.php',
             'roles' => ['admin']
         ],
     ],
