@@ -11,9 +11,10 @@
     }
 
     $book = new Book($db);
-    $allBooks = $book->getAllBooksObj();
+    $books = $book->getAllBooksObj();
 
     require_once'app/views/books.php';
 
+    
 
 ?>
