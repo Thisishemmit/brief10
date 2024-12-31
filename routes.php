@@ -102,21 +102,25 @@ $routes = [
     ],
 
     'member' => [
-        '/member/books/reserve' => [
+        '/books/reserve' => [
             'controller' => 'app/controllers/member/books/reserve.php',
             'roles' => ['member']
         ],
-        '/member/books/cancel-reservation' => [
+        '/books/borrow' => [
+            'controller' => 'app/controllers/member/books/borrow.php',
+            'roles' => ['member']
+        ],
+        '/books/cancel-reservation' => [
             'controller' => 'app/controllers/member/books/cancel-reservation.php',
             'roles' => ['member']
         ],
-        '/member/borrows' => [
+        '/borrows' => [
             'controller' => 'app/controllers/member/borrows.php',
             'title' => 'Borrows',
             'icon' => 'fa fa-book',
             'roles' => ['member']
         ],
-        '/member/borrows/return' => [
+        '/borrows/return' => [
             'controller' => 'app/controllers/member/borrows/return.php',
             'roles' => ['member']
         ],
@@ -136,6 +140,9 @@ $auth_routes = [
 
 $public_routes = [
     '/' => [
+        'controller' => 'app/controllers/books.php'
+    ],
+    '/books' => [
         'controller' => 'app/controllers/books.php'
     ],
     '/logout' => [
