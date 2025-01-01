@@ -3,20 +3,9 @@
 require_once 'app/helpers/auth.php';
 require_once 'app/helpers/errors.php';
 
-$routes = [
+$routes = include 'app/config/sidebar.php';
+$action_routes = [
     'admin' => [
-        '/admin/dashboard' => [
-            'controller' => 'app/controllers/admin/dashboard.php',
-            'title' => 'Dashboard',
-            'icon' => 'fa fa-dashboard',
-            'roles' => ['admin']
-        ],
-        '/admin/categories' => [
-            'controller' => 'app/controllers/admin/categories.php',
-            'title' => 'Categories',
-            'icon' => 'fa fa-tags',
-            'roles' => ['admin']
-        ],
         '/admin/categories/add' => [
             'controller' => 'app/controllers/admin/categories/add.php',
             'roles' => ['admin']
@@ -29,24 +18,12 @@ $routes = [
             'controller' => 'app/controllers/admin/categories/delete.php',
             'roles' => ['admin']
         ],
-        '/admin/members' => [
-            'controller' => 'app/controllers/admin/members.php',
-            'title' => 'Users',
-            'icon' => 'fa fa-users',
-            'roles' => ['admin']
-        ],
         '/admin/members/delete' => [
             'controller' => 'app/controllers/admin/members/delete.php',
             'roles' => ['admin']
         ],
         '/admin/members/edit' => [
             'controller' => 'app/controllers/admin/members/edit.php',
-            'roles' => ['admin']
-        ],
-        '/admin/books' => [
-            'controller' => 'app/controllers/admin/books.php',
-            'title' => 'Books',
-            'icon' => 'fa fa-book',
             'roles' => ['admin']
         ],
         '/admin/books/add' => [
@@ -61,24 +38,12 @@ $routes = [
             'controller' => 'app/controllers/admin/books/delete.php',
             'roles' => ['admin']
         ],
-        '/admin/borrowings' => [
-            'controller' => 'app/controllers/admin/borrowings.php',
-            'title' => 'Borrowings',
-            'icon' => 'fa fa-book',
-            'roles' => ['admin']
-        ],
         '/admin/borrowings/approve' => [
             'controller' => 'app/controllers/admin/borrowings/approve.php',
             'roles' => ['admin']
         ],
         '/admin/borrowings/reject' => [
             'controller' => 'app/controllers/admin/borrowings/reject.php',
-            'roles' => ['admin']
-        ],
-        '/admin/returnings' => [
-            'controller' => 'app/controllers/admin/returnings.php',
-            'title' => 'Returns',
-            'icon' => 'fa fa-book',
             'roles' => ['admin']
         ],
         '/admin/returnings/approve' => [
@@ -89,20 +54,8 @@ $routes = [
             'controller' => 'app/controllers/admin/returnings/reject.php',
             'roles' => ['admin']
         ],
-        '/admin/reservations' => [
-            'controller' => 'app/controllers/admin/reservations.php',
-            'title' => 'Reservations',
-            'icon' => 'fa fa-book',
-            'roles' => ['admin']
-        ],
         '/admin/reservations/delete' => [
             'controller' => 'app/controllers/admin/reservations/delete.php',
-            'roles' => ['admin']
-        ],
-        '/admin/statistics' => [
-            'controller' => 'app/controllers/admin/statistics.php',
-            'title' => 'Statistics',
-            'icon' => 'fa fa-bar-chart',
             'roles' => ['admin']
         ],
     ],
@@ -120,19 +73,12 @@ $routes = [
             'controller' => 'app/controllers/member/books/cancel-reservation.php',
             'roles' => ['member']
         ],
-        '/borrows' => [
-            'controller' => 'app/controllers/member/borrows.php',
-            'title' => 'Borrows',
-            'icon' => 'fa fa-book',
-            'roles' => ['member']
-        ],
         '/borrows/return' => [
             'controller' => 'app/controllers/member/borrows/return.php',
             'roles' => ['member']
         ],
     ],
 
-    'all' => []
 ];
 
 $auth_routes = [
@@ -180,7 +126,7 @@ if (array_key_exists($PATH, $public_routes)) {
 
 require_auth();
 
-$routes = array_merge($routes['all'], $routes['admin'], $routes['member']);
+$routes = array_merge($routes['admin'], $routes['member'], $action_routes['admin'], $action_routes['member']);
 
 if (array_key_exists($PATH, $routes)) {
     $route = $routes[$PATH];

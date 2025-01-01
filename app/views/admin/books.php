@@ -10,12 +10,14 @@ require_once 'app/helpers/errors.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Books Management</title>
     <script src="/JavaScript/tailwind.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         .book-cover {
             aspect-ratio: 1.5/1;
             object-fit: cover;
             width: 100%;
         }
+
         .modal {
             display: none;
             position: fixed;
@@ -25,6 +27,7 @@ require_once 'app/helpers/errors.php';
             height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
         }
+
         .modal.show {
             display: flex;
         }
@@ -32,7 +35,8 @@ require_once 'app/helpers/errors.php';
 </head>
 
 <body>
-    <div class="min-h-screen flex flex-col bg-gray-100">
+    <div class="min-h-screen flex flex-row bg-gray-100">
+        <?php require 'app/views/parts/sidebar.php'; ?>
         <main class="container mx-auto px-4 py-8 max-w-7xl">
             <div class="flex justify-between mb-6 items-center">
                 <h1 class="text-2xl font-bold text-gray-800">Books Management</h1>
@@ -51,18 +55,18 @@ require_once 'app/helpers/errors.php';
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-3">
                 <?php foreach ($books as $book) : ?>
                     <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-200 cursor-pointer max-w-[180px] w-full mx-auto"
-                         onclick="showBookDetails(<?= htmlspecialchars(json_encode([
-                             'id' => $book->getId(),
-                             'title' => $book->getTitle(),
-                             'author' => $book->getAuthor(),
-                             'category' => $book->getCategory(),
-                             'summary' => $book->getSummary(),
-                             'cover' => $book->getCoverImage()
-                         ])) ?>)">
+                        onclick="showBookDetails(<?= htmlspecialchars(json_encode([
+                                                        'id' => $book->getId(),
+                                                        'title' => $book->getTitle(),
+                                                        'author' => $book->getAuthor(),
+                                                        'category' => $book->getCategory(),
+                                                        'summary' => $book->getSummary(),
+                                                        'cover' => $book->getCoverImage()
+                                                    ])) ?>)">
                         <div class="relative pb-[150%]">
                             <img src="/images/<?= $book->getCoverImage() ?>"
-                                 alt="<?= htmlspecialchars($book->getTitle()) ?>"
-                                 class="absolute inset-0 w-full h-full object-cover">
+                                alt="<?= htmlspecialchars($book->getTitle()) ?>"
+                                class="absolute inset-0 w-full h-full object-cover">
                         </div>
                         <div class="p-2">
                             <h3 class="font-semibold text-sm mb-0.5 text-gray-800 truncate"><?= htmlspecialchars($book->getTitle()) ?></h3>
@@ -85,7 +89,7 @@ require_once 'app/helpers/errors.php';
                         <h2 id="modalTitle" class="text-2xl font-bold text-gray-800"></h2>
                         <button onclick="hideBookDetails()" class="text-gray-500 hover:text-gray-700">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </button>
                     </div>

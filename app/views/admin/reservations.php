@@ -8,10 +8,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Reservations</title>
     <script src="/JavaScript/tailwind.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
-    <div class="min-h-screen bg-gray-100">
+    <div class="min-h-screen flex flex-row bg-gray-100">
+        <?php require 'app/views/parts/sidebar.php'; ?>
         <main class="container mx-auto px-4 py-8">
             <?php if (has_error('delete_reservation')): ?>
                 <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
@@ -89,7 +91,7 @@
 
             content.innerHTML = `
                 <div class="flex items-center mb-6">
-                    <img src="/images/${book.cover_image}" alt="${book.title}" 
+                    <img src="/images/${book.cover_image}" alt="${book.title}"
                          class="h-24 w-16 object-cover rounded">
                     <div class="ml-4">
                         <h3 class="font-medium text-lg">${book.title}</h3>
