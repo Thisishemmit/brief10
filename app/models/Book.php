@@ -412,7 +412,6 @@ class Book
                 ORDER BY r.reserved_at ASC";
         return $this->db->fetchAll($sql, [':book_id' => $book_id]);
     }
-<<<<<<< Updated upstream
 
     public function searchByCategory($term)
     {
@@ -436,8 +435,7 @@ class Book
             ];
         }, $books);
     }
-}
-=======
+
     public function hasPendingReturnRequest()
     {
         $id_borrowed_book = $this->getBorrowedBook()['id_borrowed_book'];
@@ -492,4 +490,3 @@ class Book
         }
     }
 }
->>>>>>> Stashed changes

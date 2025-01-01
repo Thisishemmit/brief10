@@ -107,7 +107,8 @@
                     </div>
                 <?php else: ?>
                     <div class="grid gap-4">
-                        <?php foreach ($processedRequests as $processed):
+                        <?php $reverseProcessedRequests = array_reverse($processedRequests); ?>
+                        <?php foreach ($reverseProcessedRequests as $processed):
                             $book = $processed['book'];
                             $user = $processed['user'];
                             $request = $processed['request'];
