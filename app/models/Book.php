@@ -410,4 +410,27 @@ class Book
                 ORDER BY r.reserved_at ASC";
         return $this->db->fetchAll($sql, [':book_id' => $book_id]);
     }
+
+    public function searchByCategory($term)
+    {
+        $sql = "SELECT b.* FROM Books b
+                JOIN Categories c ON b.category_id = c.id_category
+                WHERE c.name LIKE :term OR b.title LIKE :term2";
+        $params = [':term' => '%' . $term . '%', ':term2' => '%' . $term . '%'];
+        $books = $this->db->fetchAll($sql, $params);
+
+        return array_map(function ($book) {
+            return [
+                'id_book' => $book['id_book'],
+                'title' => $book['title'],
+                'author' => $book['author'],
+                'category_id' => $book['category_id'],
+                'cover_image' => $book['cover_image'],
+                'summary' => $book['summary'],
+                'id_user' => $book['id_user'],
+                'status' => $book['status'],
+                'created_at' => $book['created_at']
+            ];
+        }, $books);
+    }
 }

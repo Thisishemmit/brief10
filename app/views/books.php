@@ -1,7 +1,6 @@
 <?php
 require_once 'app/helpers/errors.php';
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -36,6 +35,15 @@ require_once 'app/helpers/errors.php';
         <main class="container mx-auto px-4 py-8 max-w-7xl">
             <div class="flex justify-between mb-6 items-center">
                 <h1 class="text-2xl font-bold text-gray-800">Books Management</h1>
+                <div class="flex items-center space-x-4">
+                    <input type="text" id="searchInput" placeholder="Search books..." class="px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <button id="clearButton" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 transition duration-200">
+                        Clear
+                    </button>
+                </div>
+
+               
+
                 <div>
                     <?php if (isset($_SESSION['user'])): ?>
                         <a href="/logout"
@@ -62,7 +70,7 @@ require_once 'app/helpers/errors.php';
                 </div>
             <?php endif; ?>
 
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-3" id="books">
                 <?php foreach ($books as $book) : ?>
                     <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-200 cursor-pointer max-w-[180px] w-full mx-auto"
                          onclick="showBookDetails(<?= htmlspecialchars(json_encode([
@@ -72,7 +80,7 @@ require_once 'app/helpers/errors.php';
                              'category' => $book->getCategory(),
                              'summary' => $book->getSummary(),
                              'cover' => $book->getCoverImage()
-                         ])) ?>)">
+                         ])) ?>)" id="book">
                         <div class="relative pb-[150%]">
                             <img src="/images/<?= $book->getCoverImage() ?>"
                                  alt="<?= htmlspecialchars($book->getTitle()) ?>"
@@ -156,49 +164,115 @@ require_once 'app/helpers/errors.php';
     
 
     <script>
-        function openBorrowModal(bookId) {
-            window.currentBookId = bookId;
+       function openBorrowModal(bookId) {
+    window.currentBookId = bookId;
+    document.getElementById('borrowModal').classList.add('show');
+}
 
-            document.getElementById('borrowModal').classList.add('show');
-        }
+function hideBorrowModal() {
+    document.getElementById('borrowModal').classList.remove('show');
+}
 
-        function hideBorrowModal() {
-            document.getElementById('borrowModal').classList.remove('show');
-        }
+function confirmBorrow(days) {
+    const bookId = window.currentBookId;
+    console.log(`Borrowing book ID ${bookId} for ${days} days`);
+    hideBorrowModal();
 
-        function confirmBorrow(days) {
-            const bookId = window.currentBookId;
-            console.log(`Borrowing book ID ${bookId} for ${days} days`);
-            hideBorrowModal();
-            fetch(`/borrow`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ bookId, days })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    alert(`Successfully borrowed the book for ${days} days.`);
-                })
-                .catch(error => {
-                    console.error('Error borrowing the book:', error);
+    fetch(`/borrow`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ bookId, days })
+    })
+        .then(response => response.json())
+        .then(data => {
+            alert(`Successfully borrowed the book for ${days} days.`);
+        })
+        .catch(error => {
+            console.error('Error borrowing the book:', error);
+        });
+}
+
+function showBookDetails(book) {
+    document.getElementById('modalTitle').textContent = book.title;
+    document.getElementById('modalAuthor').textContent = book.author;
+    document.getElementById('modalCategory').textContent = book.category;
+    document.getElementById('modalSummary').textContent = book.summary;
+    document.getElementById('modalCover').src = `/images/${book.cover}`;
+    document.getElementById('bookModal').classList.add('show');
+}
+
+function hideBookDetails() {
+    document.getElementById('bookModal').classList.remove('show');
+}
+
+document.getElementById('clearButton').addEventListener('click', function () {
+    document.getElementById('searchInput').value = '';
+
+    const oldbooks = document.querySelectorAll('#books > div');
+    const newbooks = document.querySelectorAll('.search_book');
+    oldbooks.forEach(book => {
+        book.style.display = 'block';
+    });
+    newbooks.forEach(book => {
+        book.style.display = 'none';
+    });
+});
+
+document.getElementById('searchInput').addEventListener('input', function () {
+
+    const query = this.value;
+    if (query.length > 2) {
+        fetch(`/search?q=${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(data => {
+                const booksContainer = document.getElementById('books');
+                const oldbooks = document.querySelectorAll('#books > div');
+
+                oldbooks.forEach(book => {
+                    book.style.display = 'none';
                 });
-        }
+                if (data.length > 0) {
+                    data.forEach(book => {
+                        const bookDiv = document.createElement('div');
+                        bookDiv.className =
+                            'search_book bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-200 cursor-pointer max-w-[180px] w-full mx-auto';
 
-        function showBookDetails(book) {
-            document.getElementById('modalTitle').textContent = book.title;
-            document.getElementById('modalAuthor').textContent = book.author;
-            document.getElementById('modalCategory').textContent = book.category;
-            document.getElementById('modalSummary').textContent = book.summary;
-            document.getElementById('modalCover').src = `/images/${book.cover}`;
-           
-            document.getElementById('bookModal').classList.add('show');
-        }
+                        bookDiv.onclick = () => showBookDetails({
+                            id: book.id,
+                            title: book.title,
+                            author: book.author,
+                            category: book.category,
+                            summary: book.summary,
+                            cover: book.cover_image
+                        });
 
-        function hideBookDetails() {
-            document.getElementById('bookModal').classList.remove('show');
-        }
+                        bookDiv.innerHTML = `
+                            <div class="relative pb-[150%]">
+                                <img src="/images/${book.cover_image}" 
+                                     alt="${book.title}" 
+                                     class="absolute inset-0 w-full h-full object-cover">
+                            </div>
+                            <div class="p-2">
+                                <h3 class="font-semibold text-sm mb-0.5 text-gray-800 truncate">${book.title}</h3>
+                                <div class="flex justify-between items-center">
+                                    <p class="text-gray-600 text-xs truncate flex-1">${book.author}</p>
+                                    ${book.status === 'available' ? `
+                                        <button onclick="event.stopPropagation(); openBorrowModal(${book.id})" 
+                                                class="text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition duration-200">
+                                            Borrow
+                                        </button>` : ''}
+                                </div>
+                            </div>`;
+                        booksContainer.appendChild(bookDiv);
+                    });
+                }
+            })
+            .catch(error => console.error('Error fetching search results:', error));
+    }
+});
+
     </script>
 </body>
 
