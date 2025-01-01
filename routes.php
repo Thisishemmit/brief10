@@ -99,6 +99,12 @@ $routes = [
             'controller' => 'app/controllers/admin/reservations/delete.php',
             'roles' => ['admin']
         ],
+        '/admin/statistics' => [
+            'controller' => 'app/controllers/admin/statistics.php',
+            'title' => 'Statistics',
+            'icon' => 'fa fa-bar-chart',
+            'roles' => ['admin']
+        ],
     ],
 
     'member' => [
