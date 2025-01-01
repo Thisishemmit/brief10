@@ -264,7 +264,6 @@ class Book
 
         if ($this->db->query($sql, $params)) {
             return $this->updateStatus('borrowed');
-            return true;
         }
         return false;
     }
@@ -342,18 +341,19 @@ class Book
         return $this->db->query($sql, $params);
     }
 
+    private function getBorrowedBook(){
+        $sql = "SELECT * FROM BorrowedBooks WHERE id_book = :id AND returned_at IS NULL";
+        $params = [':id' => $this->id];
+        return $this->db->fetch($sql, $params);
+    }
     public function requestReturn()
     {
+        $BB = $this->getBorrowedBook();
         $sql = "INSERT INTO ReturnRequests (id_borrowed_book, id_user) VALUES (:id_borrowed_book, :id_user)";
-        $params = [':id_borrowed_book' => $this->id, ':id_user' => $this->id_user];
+        $params = [':id_borrowed_book' => $BB['id_borrowed_book'], ':id_user' => $BB['id_user']];
         return $this->db->query($sql, $params);
     }
 
-    public function getReturnRequests()
-    {
-        $sql = "SELECT * FROM ReturnRequests";
-        return $this->db->fetchAll($sql);
-    }
 
     public function approveReturnRequest($request_id)
     {
@@ -362,7 +362,9 @@ class Book
         if ($this->db->query($sql, $params)) {
             $sql = "UPDATE BorrowedBooks SET returned_at = CURRENT_TIMESTAMP WHERE id_borrowed_book = :id";
             $params = [':id' => $request_id];
-            return $this->db->query($sql, $params);
+            if ($this->db->query($sql, $params)) {
+                return $this->updateStatus('available');
+            }
         }
         return false;
     }
@@ -376,40 +378,41 @@ class Book
 
     public function rejectOtherPendingRequests($approved_request_id)
     {
-        $sql = "UPDATE BorrowRequests 
-                SET status = 'rejected' 
-                WHERE id_book = :id_book 
-                AND id_borrow_request != :request_id 
+        $sql = "UPDATE BorrowRequests
+                SET status = 'rejected'
+                WHERE id_book = :id_book
+                AND id_borrow_request != :request_id
                 AND status = 'pending'";
-        
+
         $params = [
             ':id_book' => $this->id,
             ':request_id' => $approved_request_id
         ];
-        
+
         return $this->db->query($sql, $params);
     }
 
     public function getBooksWithReservations()
     {
-        $sql = "SELECT b.*, 
-                COUNT(r.id_reservation) as reservation_count 
-                FROM Books b 
-                LEFT JOIN Reservations r ON b.id_book = r.id_book 
-                GROUP BY b.id_book 
+        $sql = "SELECT b.*,
+                COUNT(r.id_reservation) as reservation_count
+                FROM Books b
+                LEFT JOIN Reservations r ON b.id_book = r.id_book
+                GROUP BY b.id_book
                 HAVING reservation_count > 0";
         return $this->db->fetchAll($sql);
     }
 
     public function getBookReservationsWithUsers($book_id)
     {
-        $sql = "SELECT r.*, u.name as user_name 
-                FROM Reservations r 
-                JOIN Users u ON r.id_user = u.id_user 
-                WHERE r.id_book = :book_id 
+        $sql = "SELECT r.*, u.name as user_name
+                FROM Reservations r
+                JOIN Users u ON r.id_user = u.id_user
+                WHERE r.id_book = :book_id
                 ORDER BY r.reserved_at ASC";
         return $this->db->fetchAll($sql, [':book_id' => $book_id]);
     }
+<<<<<<< Updated upstream
 
     public function searchByCategory($term)
     {
@@ -434,3 +437,59 @@ class Book
         }, $books);
     }
 }
+=======
+    public function hasPendingReturnRequest()
+    {
+        $id_borrowed_book = $this->getBorrowedBook()['id_borrowed_book'];
+        $sql = "SELECT * FROM ReturnRequests WHERE id_borrowed_book = :id AND status = 'pending'";
+        $params = [':id' => $id_borrowed_book];
+        $req = $this->db->fetch($sql, $params);
+        return $req ? true : false;
+
+    }
+    public function getAllBorrowedBooks()
+    {
+        $sql = "SELECT b.id_book, u.id_user
+                FROM BorrowedBooks bb
+                JOIN Books b ON bb.id_book = b.id_book
+                JOIN Users u ON bb.id_user = u.id_user
+                WHERE bb.returned_at IS NULL";
+        $books = $this->db->fetchAll($sql);
+        if ($books) {
+           $books = array_map(function ($book) {
+                $b = new Book($this->db);
+                $b->findById($book['id_book']);
+                $u = new User($this->db);
+                $u->findById($book['id_user']);
+                return [
+                    'book' => $b,
+                    'user' => $u
+                ];
+            }, $books);
+            return $books;
+        }
+        return [];
+    }
+
+    public function getReturnRequests()
+    {
+        $id_borrowed_book = $this->getBorrowedBook()['id_borrowed_book'];
+        $sql = "SELECT * FROM ReturnRequests WHERE id_borrowed_book = :id";
+        $params = [':id' => $id_borrowed_book];
+        $reqs =  $this->db->fetchAll($sql, $params);
+        if ($reqs) {
+            $reqs = array_map(function ($req) {
+                $u = new User($this->db);
+                $u->findById($req['id_user']);
+                return [
+                    'request' => $req,
+                    'user' => $u
+                ];
+            }, $reqs);
+            return $reqs;
+        } else {
+            return [];
+        }
+    }
+}
+>>>>>>> Stashed changes
