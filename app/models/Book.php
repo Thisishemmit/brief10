@@ -341,7 +341,7 @@ class Book
         return $this->db->query($sql, $params);
     }
 
-    private function getBorrowedBook()
+    public function getBorrowedBook()
     {
         $sql = "SELECT * FROM BorrowedBooks WHERE id_book = :id AND returned_at IS NULL";
         $params = [':id' => $this->id];

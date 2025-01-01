@@ -61,11 +61,6 @@ class User
         if ($this->db->query($sql, $params)) {
             $user = $this->db->lastInsertId();
             $user = $this->findByid($user);
-            $this->id = $user['id_user'];
-            $this->name = $user['name'];
-            $this->email = $user['email'];
-            $this->role = $user['role'];
-            $this->created_at = $user['created_at'];
             return true;
         }
         return false;
