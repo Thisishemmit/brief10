@@ -147,6 +147,9 @@ $public_routes = [
     ],
     '/logout' => [
         'controller' => 'app/controllers/logout.php'
+    ],
+    '/search' => [
+        'controller' => 'app/controllers/search.php'
     ]
 ];
 
