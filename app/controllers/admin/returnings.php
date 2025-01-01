@@ -21,9 +21,24 @@ foreach ($borrowedBooks as $bb) {
         $returnings[] = [
             'book' => $book,
             'user' => $user,
-            'returnRequests' => $book->getReturnRequests(),
+            'returnRequests' => array_filter($book->getReturnRequests(), function ($returnRequest) {
+                return $returnRequest['request']['status'] === 'pending';
+            }),
         ];
     }
+}
+
+$allProccessedReturnings = [];
+foreach ($borrowedBooks as $bb) {
+    $book = $bb['book'];
+    $user = $bb['user'];
+    $allProccessedReturnings[] = [
+        'book' => $book,
+        'user' => $user,
+        'returnRequests' => array_filter($book->getReturnRequests(), function ($returnRequest) {
+            return $returnRequest['request']['status'] !== 'pending';
+        }),
+    ];
 }
 
 
