@@ -341,7 +341,8 @@ class Book
         return $this->db->query($sql, $params);
     }
 
-    private function getBorrowedBook(){
+    private function getBorrowedBook()
+    {
         $sql = "SELECT * FROM BorrowedBooks WHERE id_book = :id AND returned_at IS NULL";
         $params = [':id' => $this->id];
         return $this->db->fetch($sql, $params);
@@ -443,7 +444,6 @@ class Book
         $params = [':id' => $id_borrowed_book];
         $req = $this->db->fetch($sql, $params);
         return $req ? true : false;
-
     }
     public function getAllBorrowedBooks()
     {
@@ -454,7 +454,7 @@ class Book
                 WHERE bb.returned_at IS NULL";
         $books = $this->db->fetchAll($sql);
         if ($books) {
-           $books = array_map(function ($book) {
+            $books = array_map(function ($book) {
                 $b = new Book($this->db);
                 $b->findById($book['id_book']);
                 $u = new User($this->db);
