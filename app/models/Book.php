@@ -489,4 +489,44 @@ class Book
             return [];
         }
     }
+
+    public function getMostBorrowedBooks($limit = 5)
+    {
+        $sql = "SELECT b.*, COUNT(bb.id_book) as borrow_count 
+                FROM Books b
+                JOIN BorrowedBooks bb ON b.id_book = bb.id_book
+                GROUP BY b.id_book
+                ORDER BY borrow_count DESC
+                LIMIT :limit";
+        
+        $books = $this->db->fetchAll($sql, [':limit' => $limit]);
+        return array_map(function($book) {
+            $b = new Book($this->db);
+            $b->findById($book['id_book']);
+            return [
+                'book' => $b,
+                'borrow_count' => $book['borrow_count']
+            ];
+        }, $books);
+    }
+
+    public function getMostActiveUsers($limit = 5)
+    {
+        $sql = "SELECT u.*, COUNT(bb.id_user) as borrow_count 
+                FROM Users u
+                JOIN BorrowedBooks bb ON u.id_user = bb.id_user
+                GROUP BY u.id_user
+                ORDER BY borrow_count DESC
+                LIMIT :limit";
+        
+        $users = $this->db->fetchAll($sql, [':limit' => $limit]);
+        return array_map(function($user) {
+            $u = new User($this->db);
+            $u->findById($user['id_user']);
+            return [
+                'user' => $u,
+                'borrow_count' => $user['borrow_count']
+            ];
+        }, $users);
+    }
 }
