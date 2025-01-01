@@ -26,11 +26,13 @@ class Database
         $this->host = $host;
     }
 
-    public function isConnected() {
+    public function isConnected()
+    {
         return $this->conn !== null;
     }
 
-    public function connect() {
+    public function connect()
+    {
         if (!$this->isConnected()) {
             try {
                 $dsn = "mysql:host=$this->host;dbname=$this->dbname";
@@ -43,11 +45,13 @@ class Database
         }
     }
 
-    public function disconnect() {
+    public function disconnect()
+    {
         $this->conn = null;
     }
 
-    public function query($sql, $params = []) {
+    public function query($sql, $params = [])
+    {
         if ($this->isConnected()) {
             $stmt = $this->conn->prepare($sql);
             $stmt->execute($params);
@@ -57,17 +61,20 @@ class Database
         }
     }
 
-    public function fetch($sql, $params = []) {
+    public function fetch($sql, $params = [])
+    {
         $stmt = $this->query($sql, $params);
         return $stmt->fetch();
     }
 
-    public function fetchAll($sql, $params = []) {
+    public function fetchAll($sql, $params = [])
+    {
         $stmt = $this->query($sql, $params);
         return $stmt->fetchAll();
     }
 
-    public function lastInsertId() {
+    public function lastInsertId()
+    {
         return $this->conn->lastInsertId();
     }
 }

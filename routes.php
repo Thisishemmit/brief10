@@ -75,18 +75,18 @@ $routes = [
             'controller' => 'app/controllers/admin/borrowings/reject.php',
             'roles' => ['admin']
         ],
-        '/admin/returns' => [
-            'controller' => 'app/controllers/admin/returns.php',
+        '/admin/returnings' => [
+            'controller' => 'app/controllers/admin/returnings.php',
             'title' => 'Returns',
             'icon' => 'fa fa-book',
             'roles' => ['admin']
         ],
-        '/admin/returns/approve' => [
-            'controller' => 'app/controllers/admin/returns/approve.php',
+        '/admin/returnings/approve' => [
+            'controller' => 'app/controllers/admin/returnings/approve.php',
             'roles' => ['admin']
         ],
-        '/admin/returns/reject' => [
-            'controller' => 'app/controllers/admin/returns/reject.php',
+        '/admin/returnings/reject' => [
+            'controller' => 'app/controllers/admin/returnings/reject.php',
             'roles' => ['admin']
         ],
         '/admin/reservations' => [
