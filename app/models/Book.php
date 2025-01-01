@@ -415,8 +415,8 @@ class Book
     {
         $sql = "SELECT b.* FROM Books b
                 JOIN Categories c ON b.category_id = c.id_category
-                WHERE c.name LIKE :term";
-        $params = [':term' => '%' . $term . '%'];
+                WHERE c.name LIKE :term OR b.title LIKE :term2";
+        $params = [':term' => '%' . $term . '%', ':term2' => '%' . $term . '%'];
         $books = $this->db->fetchAll($sql, $params);
 
         return array_map(function ($book) {
