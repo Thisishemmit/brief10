@@ -7,9 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Library Statistics</title>
     <script src="/JavaScript/tailwind.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-    <div class="min-h-screen bg-gray-100">
+    <div class="min-h-screen flex flex-row bg-gray-100">
+        <?php require 'app/views/parts/sidebar.php'; ?>
         <main class="container mx-auto px-4 py-8">
             <h1 class="text-2xl font-bold mb-8">Library Statistics</h1>
 
@@ -21,7 +23,7 @@
                         <p class="text-gray-500">No borrowing data available</p>
                     <?php else: ?>
                         <div class="space-y-4">
-                            <?php foreach ($mostBorrowedBooks as $item): 
+                            <?php foreach ($mostBorrowedBooks as $item):
                                 $book = $item['book'];
                             ?>
                                 <div class="flex items-center space-x-4">
@@ -50,7 +52,7 @@
                         <p class="text-gray-500">No user activity data available</p>
                     <?php else: ?>
                         <div class="space-y-4">
-                            <?php foreach ($mostActiveUsers as $item): 
+                            <?php foreach ($mostActiveUsers as $item):
                                 $user = $item['user'];
                             ?>
                                 <div class="flex items-center justify-between py-2">

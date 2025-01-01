@@ -7,9 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Return Requests</title>
     <script src="/JavaScript/tailwind.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-    <div class="min-h-screen bg-gray-100">
+    <div class="min-h-screen flex flex-row bg-gray-100">
+        <?php require 'app/views/parts/sidebar.php'; ?>
         <main class="container mx-auto px-4 py-8">
             <?php if (has_error('return_request')): ?>
                 <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
