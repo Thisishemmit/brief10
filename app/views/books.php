@@ -64,9 +64,9 @@ require_once 'app/helpers/errors.php';
             </div>
 
 
-            <?php if (has_error('delete_book')) : ?>
+            <?php if (has_error('member_req_bor')) : ?>
                 <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
-                    <p class="text-red-700"><?= get_error('delete_book') ?></p>
+                    <p class="text-red-700"><?= get_error('member_req_bor') ?></p>
                 </div>
             <?php endif; ?>
 
@@ -90,10 +90,22 @@ require_once 'app/helpers/errors.php';
                             <h3 class="font-semibold text-sm mb-0.5 text-gray-800 truncate"><?= htmlspecialchars($book->getTitle()) ?></h3>
                             <div class="flex justify-between items-center">
                                 <p class="text-gray-600 text-xs truncate flex-1"><?= htmlspecialchars($book->getAuthor()) ?></p>
-                                <?php if ($book->getStatus() === 'available' ) : ?>
-                                    <button onclick="openBorrowModal(<?= $book->getId() ?>)">Borrow</button>
-                                <?php else : ?>
-                                    <button onclick="openReserveModal(<?= $book->getId() ?>)">Reserve</button>
+                                <?php if (is_logged_in()) : ?>
+                                    <?php if ($book->getStatus() === 'available') : ?>
+                                        <?php if (!isBookRequested($book->getId(), $allPendingReqs)) : ?>
+                                            <button onclick="event.stopPropagation(); openBorrowModal(<?= $book->getId() ?>)"
+                                                class="text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition duration-200">
+                                                Borrow
+                                            </button>
+                                        <?php else : ?>
+                                            <span class="text-xs text-gray-600">Requested</span>
+                                        <?php endif; ?>
+                                    <?php else : ?>
+                                        <button onclick="event.stopPropagation(); openReserveModal(<?= $book->getId() ?>)"
+                                            class="text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition duration-200">
+                                            Reserve
+                                        </button>
+                                    <?php endif; ?>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -121,10 +133,18 @@ require_once 'app/helpers/errors.php';
                             <p class="text-gray-600 mb-4">Summary:</p>
                             <p id="modalSummary" class="text-gray-800 mb-6"></p>
                             <div class="flex space-x-4">
-                                <?php if ($book->getStatus() === 'available' ) : ?>
-                                    <button onclick="openBorrowModal(<?= $book->getId() ?>)">Borrow</button>
-                                <?php else : ?>
-                                    <button onclick="openReserveModal(<?= $book->getId() ?>)">Reserve</button>
+                                <?php if (is_logged_in()) : ?>
+                                    <?php if ($book->getStatus() === 'available') : ?>
+                                        <button onclick="event.stopPropagation(); openBorrowModal(<?= $book->getId() ?>)"
+                                            class="text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition duration-200">
+                                            Borrow
+                                        </button>
+                                    <?php else : ?>
+                                        <button onclick="event.stopPropagation(); openReserveModal(<?= $book->getId() ?>)"
+                                            class="text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition duration-200">
+                                            Reserve
+                                        </button>
+                                    <?php endif; ?>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -174,25 +194,14 @@ function hideBorrowModal() {
 }
 
 function confirmBorrow(days) {
-    const bookId = window.currentBookId;
-    console.log(`Borrowing book ID ${bookId} for ${days} days`);
-    hideBorrowModal();
+            const bookId = window.currentBookId;
+            console.log(`Borrowing book ID ${bookId} for ${days} days`);
+            hideBorrowModal();
 
-    fetch(`/borrow`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ bookId, days })
-    })
-        .then(response => response.json())
-        .then(data => {
-            alert(`Successfully borrowed the book for ${days} days.`);
-        })
-        .catch(error => {
-            console.error('Error borrowing the book:', error);
-        });
-}
+            window.location = `/books/borrow?id=${bookId}&days=${days}`;
+
+
+        }
 
 function showBookDetails(book) {
     document.getElementById('modalTitle').textContent = book.title;
