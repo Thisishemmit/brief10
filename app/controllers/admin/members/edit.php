@@ -15,7 +15,6 @@
     }
 
     $config = include 'app/config/database.php';
-    var_dump($config);
     $db =  new Database($config['username'], $config['password'], $config['database']);
 
     if (!$db->connect()) {

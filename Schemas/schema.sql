@@ -64,6 +64,7 @@ CREATE TABLE IF NOT EXISTS Reservations(
     id_reservation INT PRIMARY KEY AUTO_INCREMENT,
     id_book INT NOT NULL,
     id_user INT NOT NULL,
+    due_at TIMESTAMP NOT NULL;
     reserved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_book) REFERENCES Books(id_book) ON DELETE CASCADE,
     FOREIGN KEY (id_user) REFERENCES Users(id_user) ON DELETE CASCADE
