@@ -68,11 +68,6 @@ require_once 'app/helpers/errors.php';
 
             <?php if (has_error('delete_book')) : ?>
                 <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
-                    <p class="text-red-700"><?= get_error('delete_book') ?></p>
-                </div>
-            <?php endif; ?>
-            <?php if (has_error('member_req_bor')) : ?>
-                <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
                     <p class="text-red-700"><?= get_error('member_req_bor') ?></p>
                 </div>
             <?php endif; ?>
