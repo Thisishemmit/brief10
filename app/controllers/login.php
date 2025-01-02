@@ -31,7 +31,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
         if ($user->findByEmail($email)) {
             if ($user->verifyPassword($password)) {
                 login_user($user->get());
-                header('Location: /');
+                if(is_admin()){
+                    header('Location: /admin/books');
+                    exit;
+                }else{
+                    header('Location: /');
+                    exit;
+                }
                 exit;
             } else {
                 $error = 'Invalid credentials';

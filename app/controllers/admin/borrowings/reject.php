@@ -18,10 +18,10 @@ if (!isset($_GET['id'])) {
 
 $request_id = $_GET['id'];
 $book = new Book($db);
+$request_id = $_GET['id'];
+$book = new Book($db);
 
-$sql = "SELECT * FROM BorrowRequests WHERE id_borrow_request = :id";
-$request = $db->fetch($sql, [':id' => $request_id]);
-
+$request = $book->getBorrowReqById($request_id);
 if (!$request) {
     set_error('request_not_found', 'Borrow request not found');
     header('Location: /admin/borrowings');
@@ -29,13 +29,7 @@ if (!$request) {
 }
 
 $book->findById($request['id_book']);
-if ($book->getStatus() === 'borrowed') {
-    set_error('reject_request', 'Cannot reject request. Book is already borrowed.');
-    header('Location: /admin/borrowings');
-    exit;
-}
 
-// Reject the request
 if ($book->rejectBorrowRequest($request_id)) {
     header('Location: /admin/borrowings');
     exit;

@@ -69,8 +69,8 @@ $action_routes = [
             'controller' => 'app/controllers/member/books/borrow.php',
             'roles' => ['member']
         ],
-        '/books/cancel-reservation' => [
-            'controller' => 'app/controllers/member/books/cancel-reservation.php',
+        '/reservations/delete' => [
+            'controller' => 'app/controllers/member/reservations/delete.php',
             'roles' => ['member']
         ],
         '/borrows/return' => [

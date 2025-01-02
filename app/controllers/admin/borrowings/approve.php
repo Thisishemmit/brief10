@@ -19,27 +19,17 @@ if (!isset($_GET['id'])) {
 $request_id = $_GET['id'];
 $book = new Book($db);
 
-// Get request details
-$sql = "SELECT * FROM BorrowRequests WHERE id_borrow_request = :id";
-$request = $db->fetch($sql, [':id' => $request_id]);
-
+$request = $book->getBorrowReqById($request_id);
 if (!$request) {
     set_error('request_not_found', 'Borrow request not found');
     header('Location: /admin/borrowings');
     exit;
 }
 
-// Check if book exists and get its status
 $book->findById($request['id_book']);
-if ($book->getStatus() === 'borrowed') {
-    set_error('approve_request', 'Cannot approve request. Book is already borrowed.');
-    header('Location: /admin/borrowings');
-    exit;
-}
 
-// Approve this request
+
 if ($book->approveBorrowRequest($request_id)) {
-    // Reject all other pending requests for this book
     $book->rejectOtherPendingRequests($request_id);
     header('Location: /admin/borrowings');
     exit;

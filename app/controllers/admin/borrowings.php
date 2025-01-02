@@ -13,6 +13,9 @@ if (!$db->connect()) {
 
 $booksMngr = new Book($db);
 $borrowings = $booksMngr->getAllBorrowed();
+$borrowings = array_filter($borrowings, function ($borrowing) {
+    return $borrowing['returned_at'] === null;
+});
 $borrowRequests = $booksMngr->getAllPendingBorrowReqs();
 
 require 'app/views/admin/borrowings.php';
