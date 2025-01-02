@@ -9,6 +9,8 @@ require_once 'app/helpers/errors.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Books Management</title>
     <script src="/JavaScript/tailwind.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <style>
         .book-cover {
             aspect-ratio: 1.5/1;
@@ -33,7 +35,11 @@ require_once 'app/helpers/errors.php';
 </head>
 
 <body>
-    <div class="min-h-screen flex flex-col bg-gray-100">
+    <div class="min-h-screen flex <?= is_logged_in() ? 'flex-row' : 'flex-col' ?> bg-gray-100">
+        <?php if (is_logged_in()): ?>
+            <?php require 'app/views/parts/sidebar.php'; ?>
+        <?php endif; ?>
+        
         <main class="container mx-auto px-4 py-8 max-w-7xl">
             <div class="flex justify-between mb-6 items-center">
                 <h1 class="text-2xl font-bold text-gray-800">Books Management</h1>
@@ -48,10 +54,7 @@ require_once 'app/helpers/errors.php';
 
                 <div>
                     <?php if (isset($_SESSION['user'])): ?>
-                        <a href="/logout"
-                            class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-200">
-                            Logout
-                        </a>
+                        <span class="text-gray-700">Welcome, <?= htmlspecialchars($_SESSION['user']['name']) ?></span>
                     <?php else:  ?>
                         <a href="/login"
                             class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition duration-200">

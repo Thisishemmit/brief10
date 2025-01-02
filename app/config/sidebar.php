@@ -59,9 +59,15 @@ return [
             'roles' => ['member']
         ],
         '/borrows' => [
-            'controller' => 'app/controllers/member/borrows.php',
-            'title' => 'Borrows',
+            'controller' => 'app/controllers/borrows.php',
+            'title' => 'My Borrows',
             'icon' => 'fa fa-book',
+            'roles' => ['member']
+        ],
+        '/reservations' => [
+            'controller' => 'app/controllers/reservations.php',
+            'title' => 'My Reservations',
+            'icon' => 'fa fa-bookmark',
             'roles' => ['member']
         ],
     ],

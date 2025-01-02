@@ -11,35 +11,7 @@ if (!$db->connect()) {
 }
 
 $booksManager = new Book($db);
-
-$borrowedBooks = $booksManager->getAllBorrowedBooks();
-$returnings = [];
-foreach ($borrowedBooks as $bb) {
-    $book = $bb['book'];
-    $user = $bb['user'];
-    if ($book->hasPendingReturnRequest()) {
-        $returnings[] = [
-            'book' => $book,
-            'user' => $user,
-            'returnRequests' => array_filter($book->getReturnRequests(), function ($returnRequest) {
-                return $returnRequest['request']['status'] === 'pending';
-            }),
-        ];
-    }
-}
-
-$allProccessedReturnings = [];
-foreach ($borrowedBooks as $bb) {
-    $book = $bb['book'];
-    $user = $bb['user'];
-    $allProccessedReturnings[] = [
-        'book' => $book,
-        'user' => $user,
-        'returnRequests' => array_filter($book->getReturnRequests(), function ($returnRequest) {
-            return $returnRequest['request']['status'] !== 'pending';
-        }),
-    ];
-}
-
+$returnings = $booksManager->getAllPendingReturnRequests();
+$allProccessedReturnings = $booksManager->getAllProccessedReturnings();
 
 require 'app/views/admin/returnings.php';

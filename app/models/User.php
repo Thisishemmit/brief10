@@ -197,7 +197,7 @@ class User
         $users = $this->db->fetchAll($sql);
         $users = array_map(function ($user) {
             $u = new User($this->db);
-            $u->findByID($user['id_user']);
+            $u->findById($user['id_user']);
             return $u;
         }, $users);
         return $users;
@@ -207,7 +207,7 @@ class User
     {
         if (!$this->id) return [];
 
-        $sql = "SELECT b.*, bb.borrowed_at, bb.due_at, bb.returned_at
+        $sql = "SELECT b.*, bb.borrowed_at, bb.due_at, bb.returned_at, bb.id_borrowed_book
                 FROM Books b
                 JOIN BorrowedBooks bb ON b.id_book = bb.id_book
                 WHERE bb.id_user = :id
@@ -215,18 +215,48 @@ class User
 
         $params = [':id' => $this->id];
         $books = $this->db->fetchAll($sql, $params);
-        $books = array_map(function ($book) {
+        return array_map(function ($book) {
             $b = new Book($this->db);
-            $b->findByID($book['id_book']);
-            return $b;
+            $b->findById($book['id_book']);
+            return [
+                'book' => $b,
+                'borrowed_at' => $book['borrowed_at'],
+                'due_at' => $book['due_at'],
+                'returned_at' => $book['returned_at'],
+                'id_borrowed_book' => $book['id_borrowed_book']
+            ];
         }, $books);
-        return $books;
     }
+
+    public function getCurrentBorrowedBooks()
+    {
+        if (!$this->id) return [];
+
+        $sql = "SELECT b.*, bb.borrowed_at, bb.due_at, bb.id_borrowed_book
+                FROM Books b
+                JOIN BorrowedBooks bb ON b.id_book = bb.id_book
+                WHERE bb.id_user = :id AND bb.returned_at IS NULL
+                ORDER BY bb.borrowed_at DESC";
+
+        $params = [':id' => $this->id];
+        $books = $this->db->fetchAll($sql, $params);
+        return array_map(function ($book) {
+            $b = new Book($this->db);
+            $b->findById($book['id_book']);
+            return [
+                'book' => $b,
+                'borrowed_at' => $book['borrowed_at'],
+                'due_at' => $book['due_at'],
+                'id_borrowed_book' => $book['id_borrowed_book']
+            ];
+        }, $books);
+    }
+
     public function getReservations()
     {
         if (!$this->id) return [];
 
-        $sql = "SELECT b.*, r.reserved_at
+        $sql = "SELECT b.*, r.reserved_at, r.due_at, r.id_reservation
                 FROM Books b
                 JOIN Reservations r ON b.id_book = r.id_book
                 WHERE r.id_user = :id
@@ -234,12 +264,16 @@ class User
 
         $params = [':id' => $this->id];
         $books = $this->db->fetchAll($sql, $params);
-        $books = array_map(function ($book) {
+        return array_map(function ($book) {
             $b = new Book($this->db);
-            $b->findByID($book['id_book']);
-            return $b;
+            $b->findById($book['id_book']);
+            return [
+                'book' => $b,
+                'reserved_at' => $book['reserved_at'],
+                'due_at' => $book['due_at'],
+                'id_reservation' => $book['id_reservation']
+            ];
         }, $books);
-        return $books;
     }
 
 }

@@ -9,8 +9,10 @@ $config = require 'app/config/database.php';
 $db = new Database($config['username'], $config['password'], $config['database']);
 
 if ($db->connect()) {
-    $booksManager = new Book($db);
-    $booksManager->makeBorrowReqsFromReservations();
+    $book = new Book($db);
+    $book->findById(3);
+    // $book->requestReturn();
 }
+
 
 require 'routes.php';

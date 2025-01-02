@@ -40,7 +40,6 @@ $book = new Book($db);
                 </div>
             <?php endif; ?>
 
-            <!-- Borrow Requests Section -->
             <section class="mb-8">
                 <h2 class="text-2xl font-bold mb-4">Borrow Requests</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -90,7 +89,6 @@ $book = new Book($db);
                 </div>
             </section>
 
-            <!-- Current Borrowings Section -->
             <section>
                 <h2 class="text-2xl font-bold mb-4">Current Borrowings</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
