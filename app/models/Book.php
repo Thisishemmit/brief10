@@ -268,13 +268,13 @@ class Book
         return false;
     }
 
-    public function reserve($user_id)
+    public function reserve($user_id, $due_date)
     {
         if (!$this->id) {
             return false;
         }
-        $sql = "INSERT INTO Reservations (id_book, id_user) VALUES (:id_book, :id_user)";
-        $params = [':id_book' => $this->id, ':id_user' => $user_id];
+        $sql = "INSERT INTO Reservations (id_book, id_user, due_at) VALUES (:id_book, :id_user, :due_at)";
+        $params = [':id_book' => $this->id, ':id_user' => $user_id, ':due_at' => $due_date];
         return $this->db->query($sql, $params);
     }
 
@@ -341,7 +341,7 @@ class Book
         return $this->db->query($sql, $params);
     }
 
-    private function getBorrowedBook()
+    public function getBorrowedBook()
     {
         $sql = "SELECT * FROM BorrowedBooks WHERE id_book = :id AND returned_at IS NULL";
         $params = [':id' => $this->id];
@@ -492,15 +492,15 @@ class Book
 
     public function getMostBorrowedBooks($limit = 5)
     {
-        $sql = "SELECT b.*, COUNT(bb.id_book) as borrow_count 
+        $sql = "SELECT b.*, COUNT(bb.id_book) as borrow_count
                 FROM Books b
                 JOIN BorrowedBooks bb ON b.id_book = bb.id_book
                 GROUP BY b.id_book
                 ORDER BY borrow_count DESC
                 LIMIT :limit";
-        
+
         $books = $this->db->fetchAll($sql, [':limit' => $limit]);
-        return array_map(function($book) {
+        return array_map(function ($book) {
             $b = new Book($this->db);
             $b->findById($book['id_book']);
             return [
@@ -512,15 +512,15 @@ class Book
 
     public function getMostActiveUsers($limit = 5)
     {
-        $sql = "SELECT u.*, COUNT(bb.id_user) as borrow_count 
+        $sql = "SELECT u.*, COUNT(bb.id_user) as borrow_count
                 FROM Users u
                 JOIN BorrowedBooks bb ON u.id_user = bb.id_user
                 GROUP BY u.id_user
                 ORDER BY borrow_count DESC
                 LIMIT :limit";
-        
+
         $users = $this->db->fetchAll($sql, [':limit' => $limit]);
-        return array_map(function($user) {
+        return array_map(function ($user) {
             $u = new User($this->db);
             $u->findById($user['id_user']);
             return [
@@ -528,5 +528,59 @@ class Book
                 'borrow_count' => $user['borrow_count']
             ];
         }, $users);
+    }
+
+    public function getOldestReservation()
+    {
+        $sql = "SELECT r.*, u.id_user 
+                FROM Reservations r
+                JOIN Users u ON r.id_user = u.id_user
+                WHERE r.id_book = :id_book
+                ORDER BY r.reserved_at ASC
+                LIMIT 1";
+
+        return $this->db->fetch($sql, [':id_book' => $this->id]);
+    }
+
+    public function convertReservationToBorrowRequest($reservation_id)
+    {
+        $sql = "SELECT * FROM Reservations WHERE id_reservation = :id";
+        $reservation = $this->db->fetch($sql, [':id' => $reservation_id]);
+
+        if (!$reservation) return false;
+
+        try {
+            if (!$this->requestBorrow($reservation['id_user'], $reservation['due_at'])) {
+                return false;
+            }
+
+            $sql = "DELETE FROM Reservations WHERE id_reservation = :id";
+            if (!$this->db->query($sql, [':id' => $reservation_id])) {
+                return false;
+            }
+
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    public function makeBorrowReqsFromReservations()
+    {
+        $sql = "SELECT DISTINCT b.id_book 
+                FROM Books b
+                JOIN Reservations r ON b.id_book = r.id_book
+                WHERE b.status = 'available'";
+
+        $books = $this->db->fetchAll($sql);
+
+        foreach ($books as $book) {
+            $this->findById($book['id_book']);
+            $oldestReservation = $this->getOldestReservation();
+
+            if ($oldestReservation) {
+                $this->convertReservationToBorrowRequest($oldestReservation['id_reservation']);
+            }
+        }
     }
 }

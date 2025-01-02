@@ -1,7 +1,6 @@
 <?php
 require_once 'app/helpers/Database.php';
 require_once 'app/helpers/errors.php';
-
 require_once 'app/models/Book.php';
 
 $config = include 'app/config/database.php';
@@ -26,9 +25,9 @@ if (isset($_GET['id']) && isset($_GET['days'])) {
 
     $book = new Book($db);
     if ($book->findById($id)) {
-        if ($book->getStatus() === 'available') {
-            if (!$book->requestBorrow($id_user, $date->format("Y-m-d H:i:s"))) {
-                $error = "unknown error happened during request";
+        if ($book->getStatus() !== 'available') {
+            if (!$book->reserve($id_user, $date->format("Y-m-d H:i:s"))) {
+                $error = "unknown error happened during reservation";
                 set_error("member_req_bor", $error);
                 header("Location: /");
                 exit;
@@ -37,7 +36,7 @@ if (isset($_GET['id']) && isset($_GET['days'])) {
                 exit;
             }
         } else {
-            $error = "Book is borrowed, You have to request a reserve";
+            $error = "Book is available, You have to request a borrow";
             set_error("member_req_bor", $error);
             header("Location: /");
             exit;

@@ -1,0 +1,2 @@
+ALTER TABLE Reservations
+ADD COLUMN due_at TIMESTAMP NOT NULL AFTER id_user;
